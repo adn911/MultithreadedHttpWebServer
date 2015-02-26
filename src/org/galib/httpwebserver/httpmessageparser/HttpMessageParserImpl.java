@@ -17,10 +17,21 @@ public class HttpMessageParserImpl implements HttpMessageParser {
         httpRequestMessage.setMethod(headerLines[0].split(" ")[0]);
         httpRequestMessage.setUrl(headerLines[0].split(" ")[1]);
         httpRequestMessage.setHttpProtocolVersion(headerLines[0].split(" ")[2]);
-        httpRequestMessage.setHost(headerLines[1].split("Host: ")[1]);
-        httpRequestMessage.setUserAgent(headerLines[2].split("User-Agent: ")[1]);
-        httpRequestMessage.setAcceptLanguage(headerLines[4].split("Accept-Language: ")[1]);
-        httpRequestMessage.setConnection(headerLines[6].split("Connection: ")[1]);
+
+        for(String line:headerLines){
+
+            if(line.startsWith("Host: "))
+                httpRequestMessage.setHost(line.replace("Host: ",""));
+
+            if(line.startsWith("User-Agent: "))
+                httpRequestMessage.setUserAgent(line.replace("User-Agent: ", ""));
+
+            if(line.startsWith("Accept-Language: "))
+                httpRequestMessage.setAcceptLanguage(line.replace("Accept-Language: ", ""));
+
+            if(line.startsWith("Connection: "))
+                httpRequestMessage.setConnection(line.replace("Connection: ",""));
+        }
 
         return httpRequestMessage;
     }
@@ -34,11 +45,20 @@ public class HttpMessageParserImpl implements HttpMessageParser {
         httpRequestMessage.setMethod(headerLines[0].split(" ")[0]);
         httpRequestMessage.setUrl(headerLines[0].split(" ")[1]);
         httpRequestMessage.setHttpProtocolVersion(headerLines[0].split(" ")[2]);
-        httpRequestMessage.setHost(headerLines[1].split("Host: ")[1]);
-        httpRequestMessage.setUserAgent(headerLines[2].split("User-Agent: ")[1]);
-        httpRequestMessage.setContentBody(headerLines[11]);
 
+        for(String line:headerLines){
 
+            if(line.startsWith("Host: "))
+                httpRequestMessage.setHost(line.replace("Host: ",""));
+
+            if(line.startsWith("User-Agent: "))
+                httpRequestMessage.setUserAgent(line.replace("User-Agent: ", ""));
+
+            if(line.startsWith("Connection: "))
+                httpRequestMessage.setConnection(line.replace("Connection: ",""));
+        }
+
+        httpRequestMessage.setContentBody(headerLines[headerLines.length-1]);
         return httpRequestMessage;
     }
 }

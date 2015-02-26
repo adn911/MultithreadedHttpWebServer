@@ -80,27 +80,30 @@ public class HttpClientHandler implements Runnable {
 
     private void sendResponse(HttpRequestMessage httpRequestMessage) {
 
-        String url = httpRequestMessage.getUrl();
-        String pageRequest = url.contains("\\?") == true ? url.split("\\?")[0] : url;
+        if( httpRequestMessage!= null ){
 
-        System.out.println(pageRequest);
+            String url = httpRequestMessage.getUrl();
+            String pageRequest = ( url.contains("?") == true ? url.split("\\?")[0] : url );
 
-        HttpResponseMessage httpResponseMessage = new HttpResponseMessage();
-        httpResponseMessage.setHttpProtocolVersion("HTTP/1.0");
-        httpResponseMessage.setStatusCode("200");
-        httpResponseMessage.setStatusMessage("OK");
-        httpResponseMessage.setContentType("text/html");
-        httpResponseMessage.setServer("Test Server");
-        httpResponseMessage.setContentBody(FileService.readFromFile(pageRequest));
+            System.out.println(pageRequest);
 
-        writer.println(httpResponseMessage);
-        writer.flush();
+            HttpResponseMessage httpResponseMessage = new HttpResponseMessage();
+            httpResponseMessage.setHttpProtocolVersion("HTTP/1.0");
+            httpResponseMessage.setStatusCode("200");
+            httpResponseMessage.setStatusMessage("OK");
+            httpResponseMessage.setContentType("text/html");
+            httpResponseMessage.setServer("Test Server");
+            httpResponseMessage.setContentBody(FileService.readFromFile(pageRequest));
 
+            //System.out.println(httpResponseMessage);
+            writer.println(httpResponseMessage);
+            writer.flush();
+        }
 
     }
 
     private String getPostContent(String httpRequestMessageString){
-        int contentLength = Integer.parseInt(httpRequestMessageString.split("Content-Length: ")[1].replaceAll("\"", "").trim());
+        int contentLength = Integer.parseInt(httpRequestMessageString.split("Content-Length: ")[1].split("\r\n")[0]);
         char[] content = new char[contentLength];
 
         try {
